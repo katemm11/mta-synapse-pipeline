@@ -1,0 +1,61 @@
+{
+	"name": "MTA Synapse Notebook",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "mtasparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "56g",
+			"driverCores": 8,
+			"executorMemory": "56g",
+			"executorCores": 8,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "7c0a6ddc-971c-41a4-9db5-e0e53cc7f4fc"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/5ed90db2-31fb-43a4-a4f5-e58fff72a675/resourceGroups/MTA-pipeline/providers/Microsoft.Synapse/workspaces/mta-pipeline-workspace/bigDataPools/mtasparkpool",
+				"name": "mtasparkpool",
+				"type": "Spark",
+				"endpoint": "https://mta-pipeline-workspace.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/mtasparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.4",
+				"nodeCount": 10,
+				"cores": 8,
+				"memory": 56,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"wifi_locations_df = spark.read.load('https://mtapipelinestorage.dfs.core.windows.net/files/MTA_Wi-Fi_Locations_20241223.csv')\n",
+					"display(df.limit(10))"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
