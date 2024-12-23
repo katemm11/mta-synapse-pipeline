@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c5f03fca-1114-47d2-a407-ef8aca392ce8"
+				"spark.autotune.trackingId": "16085ce0-14e2-462a-a9d8-5a2b1ddd6b66"
 			}
 		},
 		"metadata": {
@@ -40,10 +40,10 @@
 					"authResource": "https://dev.azuresynapse.net"
 				},
 				"sparkVersion": "3.4",
-				"nodeCount": 10,
+				"nodeCount": 3,
 				"cores": 8,
 				"memory": 56,
-				"automaticScaleJobs": false
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -53,6 +53,24 @@
 				"source": [
 					"wifi_locations_df = spark.read.load('https://mtapipelinestorage.dfs.core.windows.net/files/MTA_Wi-Fi_Locations_20241223.csv')\n",
 					"display(df.limit(10))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
 				],
 				"execution_count": null
 			}
