@@ -2,7 +2,7 @@
 	"name": "Querying files in SQL pool",
 	"properties": {
 		"content": {
-			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://mtapipelinestorage.dfs.core.windows.net/files/MTA_Wi-Fi_Locations_20241223.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\n\n--create external data source\nCREATE EXTERNAL DATA SOURCE files\nWITH (\n    LOCATION = 'https://mtapipelinestorage.dfs.core.windows.net/files/',\n)\n\n--select from external data source\nSELECT *\nFROM\n    OPENROWSET(\n        BULK '*.csv',\n        DATA_SOURCE = 'files',\n        FORMAT = 'csv',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS orders\n    ",
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://mtapipelinestorage.dfs.core.windows.net/files/MTA_Wi-Fi_Locations_20241223.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS [result]\n\n--create external data source\nCREATE EXTERNAL DATA SOURCE files\nWITH (\n    LOCATION = 'https://mtapipelinestorage.dfs.core.windows.net/files/',\n)\n\n--select from external data source\nSELECT *\nFROM\n    OPENROWSET(\n        BULK '*.csv',\n        DATA_SOURCE = 'files',\n        FORMAT = 'csv',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) AS orders\n",
 			"metadata": {
 				"language": "sql"
 			},
