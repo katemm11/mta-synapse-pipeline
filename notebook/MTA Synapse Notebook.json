@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "93dfb67f-8b43-40c2-bdbe-b8be9a401aa6"
+				"spark.autotune.trackingId": "8d0c9928-06eb-48bf-a846-cb9fdd26287c"
 			}
 		},
 		"metadata": {
@@ -58,36 +58,15 @@
 				},
 				"source": [
 					"#load wifi data\n",
-					"wifi_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/wifi_locations/MTA_Wi-Fi_Locations_20241223.csv', header=True, inferSchema=True)\n",
+					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/wifi_locations/MTA_Wi-Fi_Locations_20241223.csv', header=True, inferSchema=True)\n",
 					"\n",
-					"wifi_df.createOrReplaceTempView(\"wifi_stations\")\n",
+					"response_df.createOrReplaceTempView(\"wifi_stations\")\n",
 					"\n",
-					"transformed_df = spark.sql(\"SELECT STATION_COMPLEX AS station, IS_HISTORICAL AS is_historical, BOROUGH AS borough, WIFI_AVAILABLE AS wifi_available, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile\\\n",
+					"wifi_df = spark.sql(\"SELECT STATION_COMPLEX AS station, IS_HISTORICAL AS is_historical, BOROUGH AS borough, WIFI_AVAILABLE AS wifi_available, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile\\\n",
 					"                      FROM wifi_stations\")\n",
-					"display(transformed_df)"
+					"display(wifi_df)"
 				],
-				"execution_count": 9
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					},
-					"collapsed": false
-				},
-				"source": [
-					"#create wifi temp view\n",
-					"#wifi_df = spark.sql(\"SELECT STATION_COMPLEX AS station_complex, IS_HISTORICAL AS is_historical, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile FROM wifi_locations\")\n",
-					"#display(wifi_df.limit(10))"
-				],
-				"execution_count": 3
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -105,12 +84,15 @@
 				},
 				"source": [
 					"#load rider data\n",
-					"from pyspark.sql.functions import split, col\n",
 					"\n",
 					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
-					"display(response_df.limit(10))"
+					"response_df.createOrReplaceTempView(\"rider_data\")\n",
+					"\n",
+					"timestamp_station_df = spark.sql(\"SELECT transit_timestamp, station_complex \\\n",
+					" FROM rider_data\")\n",
+					"display(timestamp_station_df)"
 				],
-				"execution_count": 6
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
