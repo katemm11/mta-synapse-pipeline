@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "382d7e11-0068-4d1c-8d49-4aa5c90f3e4a"
+				"spark.autotune.trackingId": "daa0b875-1856-41b8-bf96-6db1a98ebbb6"
 			}
 		},
 		"metadata": {
@@ -71,7 +71,7 @@
 					".withColumn(\"tmobile\",when(response_df.TMOBILE == 'Yes', True).when(response_df.TMOBILE == 'No', False))\n",
 					"\n",
 					"#display(response_df.limit(5))\n",
-					"response_df.schema.fields\n",
+					"display(response_df.schema.fields)\n",
 					"\n",
 					"response_df.createOrReplaceTempView(\"wifi_stations\")\n",
 					"\n",
@@ -80,7 +80,7 @@
 					"wifi_df.createOrReplaceTempView(\"station_data\")\n",
 					"display(wifi_df.limit(5))"
 				],
-				"execution_count": 45
+				"execution_count": 51
 			},
 			{
 				"cell_type": "code",
@@ -104,10 +104,14 @@
 					"\n",
 					"timestamp_station_df = spark.sql(\"SELECT transit_timestamp, station_complex \\\n",
 					" FROM rider_data\")\n",
+					"\n",
+					"display(response_df.schema.fields)\n",
+					"\n",
 					"response_df.createOrReplaceTempView(\"rider_data\") \n",
-					"display(timestamp_station_df.limit(5))"
+					"display(timestamp_station_df.limit(5))\n",
+					""
 				],
-				"execution_count": 46
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
@@ -125,10 +129,31 @@
 				},
 				"source": [
 					"#join dataframes\n",
-					"joint_df = spark.sql(\"SELECT r.transit_timestamp, r.station_complex, s.is_historical, s.wifi_available, CASE WHEN s.att = True OR s.sprint = True OR s.tmobile = True THEN True ELSE False END AS service_available FROM rider_data r JOIN station_data s ON r.station_complex = s.station_complex\")\n",
+					"joint_df = spark.sql(\"SELECT CAST(r.transit_timestamp AS DATE) AS date, r.station_complex, s.is_historical, s.wifi_available, CASE WHEN s.att = True OR s.sprint = True OR s.tmobile = True THEN True ELSE False END AS service_available FROM rider_data r JOIN station_data s ON r.station_complex = s.station_complex\")\n",
+					"joint_df.createOrReplaceTempView(\"joint_data\")\n",
+					"joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data\")\n",
 					"display(joint_df.limit(5))"
 				],
-				"execution_count": 48
+				"execution_count": 62
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#write modified data to parquet\n",
+					"joint_df.write.partitionBy(\"Year\").mode(\"overwrite\").parquet(\"/updated_data\")"
+				],
+				"execution_count": 63
 			},
 			{
 				"cell_type": "code",
