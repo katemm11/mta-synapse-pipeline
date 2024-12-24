@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bc97f595-f015-4e16-bf54-2ac047a0ecc8"
+				"spark.autotune.trackingId": "401a7c0e-c437-48e0-93a2-e15d4a672cc4"
 			}
 		},
 		"metadata": {
@@ -97,10 +97,33 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"#load rider data\n",
+					"from pyspark.sql.functions import split, col\n",
+					"\n",
+					"response_df = spark.read.option(\"delimiter\", '\",\"').csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
+					"#new_df = rider_df.withColumn(\"Transit timestamp\", split(col(\"Prop_0\"), '\":\"').getItem(1)).withColumn(\"Transit model\", split(col(\"Prop_1\"), '\",\"').getItem(1))\n",
+					"display(new_df.limit(10))"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					""
 				],
 				"execution_count": null
