@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "401a7c0e-c437-48e0-93a2-e15d4a672cc4"
+				"spark.autotune.trackingId": "93dfb67f-8b43-40c2-bdbe-b8be9a401aa6"
 			}
 		},
 		"metadata": {
@@ -52,17 +52,21 @@
 				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
-						"outputs_hidden": true
+						"outputs_hidden": false
 					},
 					"collapsed": false
 				},
 				"source": [
 					"#load wifi data\n",
-					"df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/wifi_locations/MTA_Wi-Fi_Locations_20241223.csv', header=True, inferSchema=True)\n",
-					"display(df.limit(10))\n",
-					"df.schema.fields"
+					"wifi_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/wifi_locations/MTA_Wi-Fi_Locations_20241223.csv', header=True, inferSchema=True)\n",
+					"\n",
+					"wifi_df.createOrReplaceTempView(\"wifi_stations\")\n",
+					"\n",
+					"transformed_df = spark.sql(\"SELECT STATION_COMPLEX AS station, IS_HISTORICAL AS is_historical, BOROUGH AS borough, WIFI_AVAILABLE AS wifi_available, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile\\\n",
+					"                      FROM wifi_stations\")\n",
+					"display(transformed_df)"
 				],
-				"execution_count": 14
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -80,11 +84,10 @@
 				},
 				"source": [
 					"#create wifi temp view\n",
-					"new_df = spark.sql(\"SELECT STATION_COMPLEX AS station_complex, IS_HISTORICAL AS is_historical, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile FROM wifi_locations\")\n",
-					"new_df.createOrReplaceTempView(\"wifi_locations\")\n",
-					"display(new_df.limit(10))"
+					"#wifi_df = spark.sql(\"SELECT STATION_COMPLEX AS station_complex, IS_HISTORICAL AS is_historical, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile FROM wifi_locations\")\n",
+					"#display(wifi_df.limit(10))"
 				],
-				"execution_count": 20
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -104,11 +107,10 @@
 					"#load rider data\n",
 					"from pyspark.sql.functions import split, col\n",
 					"\n",
-					"response_df = spark.read.option(\"delimiter\", '\",\"').csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
-					"#new_df = rider_df.withColumn(\"Transit timestamp\", split(col(\"Prop_0\"), '\":\"').getItem(1)).withColumn(\"Transit model\", split(col(\"Prop_1\"), '\",\"').getItem(1))\n",
-					"display(new_df.limit(10))"
+					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
+					"display(response_df.limit(10))"
 				],
-				"execution_count": 28
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
