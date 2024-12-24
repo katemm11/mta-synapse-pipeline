@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8d0c9928-06eb-48bf-a846-cb9fdd26287c"
+				"spark.autotune.trackingId": "1192f207-7891-46f2-94f5-cbd45654daf3"
 			}
 		},
 		"metadata": {
@@ -58,15 +58,28 @@
 				},
 				"source": [
 					"#load wifi data\n",
+					"\n",
+					"from pyspark.sql.functions import when\n",
+					"\n",
 					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/wifi_locations/MTA_Wi-Fi_Locations_20241223.csv', header=True, inferSchema=True)\n",
+					"\n",
+					"\n",
+					"response_df = response_df.withColumn(\"is_historical\",when(response_df.IS_HISTORICAL == 'Yes', True).when(response_df.IS_HISTORICAL == 'No', False)) \\\n",
+					".withColumn(\"wifi_available\",when(response_df.WIFI_AVAILABLE == 'Yes', True).when(response_df.WIFI_AVAILABLE == 'No', False)) \\\n",
+					".withColumn(\"att\",when(response_df.ATT == 'Yes', True).when(response_df.ATT == 'No', False)) \\\n",
+					".withColumn(\"sprint\",when(response_df.SPRINT == 'Yes', True).when(response_df.SPRINT == 'No', False)) \\\n",
+					".withColumn(\"tmobile\",when(response_df.TMOBILE == 'Yes', True).when(response_df.TMOBILE == 'No', False))\n",
+					"\n",
+					"#display(response_df.limit(5))\n",
+					"response_df.schema.fields\n",
 					"\n",
 					"response_df.createOrReplaceTempView(\"wifi_stations\")\n",
 					"\n",
-					"wifi_df = spark.sql(\"SELECT STATION_COMPLEX AS station, IS_HISTORICAL AS is_historical, BOROUGH AS borough, WIFI_AVAILABLE AS wifi_available, ATT AS att, SPRINT AS sprint, TMOBILE AS tmobile\\\n",
+					"wifi_df = spark.sql(\"SELECT STATION_COMPLEX AS station_complex, is_historical, BOROUGH AS borough, wifi_available, att, sprint, tmobile\\\n",
 					"                      FROM wifi_stations\")\n",
-					"display(wifi_df)"
+					"display(wifi_df.limit(5))"
 				],
-				"execution_count": 19
+				"execution_count": 37
 			},
 			{
 				"cell_type": "code",
@@ -90,9 +103,28 @@
 					"\n",
 					"timestamp_station_df = spark.sql(\"SELECT transit_timestamp, station_complex \\\n",
 					" FROM rider_data\")\n",
-					"display(timestamp_station_df)"
+					"display(timestamp_station_df.limit(10))"
 				],
-				"execution_count": 20
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"#join dataframes\n",
+					"joint_df = spark.sql(\"SELECT r.transit_timestamp, r.station_complex, r.is_historical\")"
+				],
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
