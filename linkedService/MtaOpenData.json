@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://data.ny.gov/resource/wujg-7c2s.json",
+			"url": "https://data.ny.gov",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		},
