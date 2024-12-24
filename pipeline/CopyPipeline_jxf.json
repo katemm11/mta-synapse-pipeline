@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_jxf",
+				"name": "Copy_rider_data",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
