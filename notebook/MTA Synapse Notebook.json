@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "daa0b875-1856-41b8-bf96-6db1a98ebbb6"
+				"spark.autotune.trackingId": "bdee00ab-e309-47da-a0c7-e16c55a32604"
 			}
 		},
 		"metadata": {
@@ -70,8 +70,7 @@
 					".withColumn(\"sprint\",when(response_df.SPRINT == 'Yes', True).when(response_df.SPRINT == 'No', False)) \\\n",
 					".withColumn(\"tmobile\",when(response_df.TMOBILE == 'Yes', True).when(response_df.TMOBILE == 'No', False))\n",
 					"\n",
-					"#display(response_df.limit(5))\n",
-					"display(response_df.schema.fields)\n",
+					"#display(response_df.schema.fields)\n",
 					"\n",
 					"response_df.createOrReplaceTempView(\"wifi_stations\")\n",
 					"\n",
@@ -80,7 +79,7 @@
 					"wifi_df.createOrReplaceTempView(\"station_data\")\n",
 					"display(wifi_df.limit(5))"
 				],
-				"execution_count": 51
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -105,13 +104,13 @@
 					"timestamp_station_df = spark.sql(\"SELECT transit_timestamp, station_complex \\\n",
 					" FROM rider_data\")\n",
 					"\n",
-					"display(response_df.schema.fields)\n",
+					"#display(response_df.schema.fields)\n",
 					"\n",
 					"response_df.createOrReplaceTempView(\"rider_data\") \n",
 					"display(timestamp_station_df.limit(5))\n",
 					""
 				],
-				"execution_count": 52
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -151,7 +150,7 @@
 				},
 				"source": [
 					"#write modified data to parquet\n",
-					"joint_df.write.partitionBy(\"Year\").mode(\"overwrite\").parquet(\"/updated_data\")"
+					"joint_df.write.partitionBy(\"Year\").partitionBy(\"Month\")mode(\"overwrite\").parquet(\"/updated_data\")"
 				],
 				"execution_count": 63
 			},
