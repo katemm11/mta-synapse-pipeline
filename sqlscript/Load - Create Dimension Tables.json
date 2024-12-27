@@ -1,0 +1,17 @@
+{
+	"name": "Load - Create Dimension Tables",
+	"properties": {
+		"content": {
+			"query": "CREATE TABLE dbo.DimStation\n(\n    StationKey INT IDENTITY NOT NULL,\n    StationAlternateKey NVARCHAR(15) NULL,\n    StationName NVARCHAR(50) NULL,\n    StationComplex NVARCHAR(50) NULL,\n    Borough NVARCHAR(15) NULL,\n    IsHistorical BIT NULL,\n    Service_Available BIT NULL\n)\nWITH (\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED COLUMNSTORE INDEX\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "mtasqlpool",
+				"poolName": "mtasqlpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
