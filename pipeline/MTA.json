@@ -73,7 +73,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "MTA Synapse Notebook",
+						"referenceName": "MTA Data Manipulation Workbook",
 						"type": "NotebookReference"
 					},
 					"snapshot": true,
