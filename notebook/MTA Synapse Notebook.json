@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bdee00ab-e309-47da-a0c7-e16c55a32604"
+				"spark.autotune.trackingId": "fa502eb5-ec85-4a88-9458-4b09d281ce1d"
 			}
 		},
 		"metadata": {
@@ -79,7 +79,7 @@
 					"wifi_df.createOrReplaceTempView(\"station_data\")\n",
 					"display(wifi_df.limit(5))"
 				],
-				"execution_count": 1
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -110,7 +110,7 @@
 					"display(timestamp_station_df.limit(5))\n",
 					""
 				],
-				"execution_count": 5
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -130,10 +130,10 @@
 					"#join dataframes\n",
 					"joint_df = spark.sql(\"SELECT CAST(r.transit_timestamp AS DATE) AS date, r.station_complex, s.is_historical, s.wifi_available, CASE WHEN s.att = True OR s.sprint = True OR s.tmobile = True THEN True ELSE False END AS service_available FROM rider_data r JOIN station_data s ON r.station_complex = s.station_complex\")\n",
 					"joint_df.createOrReplaceTempView(\"joint_data\")\n",
-					"joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data\")\n",
+					"joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data WHERE YEAR(date) = 2024\")\n",
 					"display(joint_df.limit(5))"
 				],
-				"execution_count": 62
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -150,9 +150,9 @@
 				},
 				"source": [
 					"#write modified data to parquet\n",
-					"joint_df.write.partitionBy(\"Year\").partitionBy(\"Month\")mode(\"overwrite\").parquet(\"/updated_data\")"
+					"joint_df.write.partitionBy(\"Month\").mode(\"overwrite\").parquet(\"/updated_data\")"
 				],
-				"execution_count": 63
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
