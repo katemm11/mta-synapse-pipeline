@@ -51,6 +51,45 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Run MTA Notebook",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Copy rider data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "MTA Synapse Notebook",
+						"type": "NotebookReference"
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "mtasparkpool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": true,
+						"spark.dynamicAllocation.minExecutors": 3,
+						"spark.dynamicAllocation.maxExecutors": 10
+					},
+					"driverSize": "Small",
+					"numExecutors": 3
+				}
 			}
 		],
 		"annotations": []
