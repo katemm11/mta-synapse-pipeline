@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "/resource/wujg-7c2s.json"
+				"relativeUrl": "/resource/wujg-7c2s.json?$limit=1000"
 			}
 		},
 		"schema": {}
