@@ -1,8 +1,8 @@
 {
-	"name": "Load - Create Dimension Tables",
+	"name": "Load - Create Tables",
 	"properties": {
 		"content": {
-			"query": "CREATE TABLE dbo.DimStation\n(\n    StationKey INT IDENTITY NOT NULL,\n    StationAlternateKey NVARCHAR(15) NULL,\n    StationName NVARCHAR(50) NULL,\n    StationComplex NVARCHAR(50) NULL,\n    Borough NVARCHAR(15) NULL,\n    IsHistorical BIT NULL,\n    Service_Available BIT NULL\n)\nWITH (\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED COLUMNSTORE INDEX\n)",
+			"query": "--create station dimension table\nCREATE TABLE dbo.DimStation\n(\n    StationKey INT IDENTITY NOT NULL,\n    StationAlternateKey NVARCHAR(15) NOT NULL,\n    StationName NVARCHAR(50) NULL,\n    StationComplex NVARCHAR(50) NULL,\n    Borough NVARCHAR(15) NULL,\n    IsHistorical BIT NULL,\n    Service_Available BIT NULL\n)\nWITH (\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED COLUMNSTORE INDEX\n)\n\n--create transit mode dimension table\nCREATE TABLE dbo.DimTransitMode (\n    TransitModeKey INT IDENTITY NOT NULL,\n    TransitAlternateKey NVARCHAR(50) NOT NULL\n)\nWITH (\n    DISTRIBUTION = REPLICATE,\n    CLUSTERED COLUMNSTORE INDEX\n)\n\n\nCREATE TABLE dbo.FactRides (\n    RideTime DATETIME NOT NULL,\n    TransitModeKey INT NOT NULL,\n    StationKey NVARCHAR(15) NOT NULL,\n    \n)\n",
 			"metadata": {
 				"language": "sql"
 			},
