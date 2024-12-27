@@ -1,0 +1,17 @@
+{
+	"name": "Load - Create Staging Tables",
+	"properties": {
+		"content": {
+			"query": "--create station staging table\n\nCREATE TABLE dbo.StageStation (\n    StationName NVARCHAR(50) NULL,\n    StationComplex NVARCHAR(50) NULL,\n    Borough NVARCHAR(15) NULL,\n    IsHistorical BIT NULL,\n    Service_Available BIT NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n--create rides staging table\n\nCREATE TABLE dbo.StageRides (\n    RideTime DATETIME NOT NULL,\n    StationKey NVARCHAR(20) NOT NULL,\n    TransitMode NVARCHAR(20) NULL,\n    PaymentMethod NVARCHAR(20) NULL,\n    FareClassKey NVARCHAR(20) NULL,\n    Transfers INT NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "mtasqlpool",
+				"poolName": "mtasqlpool"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
