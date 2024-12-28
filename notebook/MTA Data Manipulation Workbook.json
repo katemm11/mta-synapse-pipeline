@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "1b022c31-0d4e-4cac-8fde-f7c7fef1ab6f"
+				"spark.autotune.trackingId": "b4a98964-807a-4af6-b88d-f81118e0a373"
 			}
 		},
 		"metadata": {
@@ -74,10 +74,14 @@
 					"\n",
 					"response_df.createOrReplaceTempView(\"wifi_stations\")\n",
 					"\n",
-					"wifi_df = spark.sql(\"SELECT STATION_COMPLEX AS station_complex, is_historical, BOROUGH AS borough, wifi_available, att, sprint, tmobile\\\n",
-					"                      FROM wifi_stations\")\n",
-					"wifi_df.createOrReplaceTempView(\"station_data\")\n",
-					"display(wifi_df.limit(5))"
+					"station_df = spark.sql(\"SELECT STATION AS StationName, STATION_COMPLEX AS StationComplex, is_historical AS IsHistorical, BOROUGH AS Borough, wifi_available as WifiAvailable, CASE WHEN att = True \\\n",
+					"  OR sprint = True \\\n",
+					"  OR tmobile = True THEN True ELSE False END AS ServiceAvailable\\\n",
+					"    FROM wifi_stations\")\n",
+					"station_df.createOrReplaceTempView(\"station_data\")\n",
+					"display(station_df.limit(5))\n",
+					"\n",
+					"station_df.write.mode(\"overwrite\").parquet(\"/updated_data/station_data\")"
 				],
 				"execution_count": 6
 			},
@@ -101,16 +105,17 @@
 					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
 					"response_df.createOrReplaceTempView(\"rider_data\")\n",
 					"\n",
-					"timestamp_station_df = spark.sql(\"SELECT transit_timestamp, station_complex \\\n",
+					"rider_df = spark.sql(\"SELECT CAST(transit_timestamp AS DATE) AS RideDate, station_complex AS StationComplex,\\\n",
+					" transit_mode AS TransitMode, payment_method AS PaymentMethod, fare_class_category AS FareClassCategory,\\\n",
+					" transfers AS Transfers \\\n",
 					" FROM rider_data\")\n",
 					"\n",
 					"#display(response_df.schema.fields)\n",
-					"\n",
-					"response_df.createOrReplaceTempView(\"rider_data\") \n",
-					"display(timestamp_station_df.limit(5))\n",
+					"#response_df.createOrReplaceTempView(\"rider_data\") \n",
+					"display(rider_df.limit(5))\n",
 					""
 				],
-				"execution_count": 7
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -128,10 +133,10 @@
 				},
 				"source": [
 					"#join dataframes\n",
-					"joint_df = spark.sql(\"SELECT CAST(r.transit_timestamp AS DATE) AS date, r.station_complex, s.is_historical, s.wifi_available, CASE WHEN s.att = True OR s.sprint = True OR s.tmobile = True THEN True ELSE False END AS service_available FROM rider_data r JOIN station_data s ON r.station_complex = s.station_complex\")\n",
-					"joint_df.createOrReplaceTempView(\"joint_data\")\n",
-					"joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data WHERE YEAR(date) = 2024\")\n",
-					"display(joint_df.limit(5))"
+					"# joint_df = spark.sql(\"SELECT CAST(r.transit_timestamp AS DATE) AS date, r.station_complex, s.is_historical, s.wifi_available, CASE WHEN s.att = True OR s.sprint = True OR s.tmobile = True THEN True ELSE False END AS service_available FROM rider_data r JOIN station_data s ON r.station_complex = s.station_complex\")\n",
+					"# joint_df.createOrReplaceTempView(\"joint_data\")\n",
+					"# joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data WHERE YEAR(date) = 2024\")\n",
+					"# display(joint_df.limit(5))"
 				],
 				"execution_count": 15
 			},
