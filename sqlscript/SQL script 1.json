@@ -2,7 +2,7 @@
 	"name": "SQL script 1",
 	"properties": {
 		"content": {
-			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://mtapipelinestorage.dfs.core.windows.net/files/updated_data/station_data/*parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n",
+			"query": "-- This is auto-generated code\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://mtapipelinestorage.dfs.core.windows.net/files/updated_data/rider_data/*parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n",
 			"metadata": {
 				"language": "sql"
 			},

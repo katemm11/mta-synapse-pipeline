@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c0fdb448-0376-4ba3-9e4c-8f3c0578725b"
+				"spark.autotune.trackingId": "d6c86742-8d39-405f-812b-f2f235abc228"
 			}
 		},
 		"metadata": {
@@ -70,20 +70,20 @@
 					".withColumn(\"sprint\",when(response_df.SPRINT == 'Yes', True).when(response_df.SPRINT == 'No', False)) \\\n",
 					".withColumn(\"tmobile\",when(response_df.TMOBILE == 'Yes', True).when(response_df.TMOBILE == 'No', False))\n",
 					"\n",
-					"#display(response_df.schema.fields)\n",
 					"\n",
 					"response_df.createOrReplaceTempView(\"wifi_stations\")\n",
 					"\n",
-					"station_df = spark.sql(\"SELECT STATION AS StationName, STATION_COMPLEX AS StationComplex, is_historical AS IsHistorical, BOROUGH AS Borough, wifi_available as WifiAvailable, CASE WHEN att = True \\\n",
+					"station_df = spark.sql(\"SELECT STATION AS StationName, STATION_COMPLEX AS StationComplex, BOROUGH AS Borough, is_historical AS IsHistorical,wifi_available as WifiAvailable, CASE WHEN att = True \\\n",
 					"  OR sprint = True \\\n",
 					"  OR tmobile = True THEN True ELSE False END AS ServiceAvailable\\\n",
 					"    FROM wifi_stations\")\n",
 					"station_df.createOrReplaceTempView(\"station_data\")\n",
-					"display(station_df.limit(5))\n",
+					"#display(station_df.limit(5))\n",
 					"\n",
+					"display(station_df.schema.fields)\n",
 					"station_df.write.mode(\"overwrite\").parquet(\"/updated_data/station_data\")"
 				],
-				"execution_count": 6
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -102,24 +102,29 @@
 				"source": [
 					"#load rider data\n",
 					"\n",
+					"from pyspark.sql.types import FloatType\n",
+					"\n",
 					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
+					"\n",
+					"response_df = response_df.withColumn(\"transfers\",response_df.transfers.cast(FloatType()))\n",
+					"\n",
 					"response_df.createOrReplaceTempView(\"rider_data\")\n",
 					"\n",
+					"#CAST(transit_timestamp AS DATE) AS RideDate,\n",
+					"# transfers AS Transfers\n",
 					"rider_df = spark.sql(\"SELECT CAST(transit_timestamp AS DATE) AS RideDate, station_complex AS StationComplex,\\\n",
 					" transit_mode AS TransitMode, payment_method AS PaymentMethod, fare_class_category AS FareClassCategory,\\\n",
-					" transfers AS Transfers \\\n",
+					" transfers AS Transfers\\\n",
 					" FROM rider_data\")\n",
-					"\n",
-					"#display(response_df.schema.fields)\n",
-					"#response_df.createOrReplaceTempView(\"rider_data\") \n",
-					"#MONTH(CAST(transit_timestamp AS DATE)) AS month\n",
 					"\n",
 					"display(rider_df.limit(5))\n",
 					"\n",
+					"display(rider_df.schema.fields)\n",
 					"rider_df.write.mode(\"overwrite\").parquet(\"/updated_data/rider_data\")\n",
+					"\n",
 					""
 				],
-				"execution_count": 17
+				"execution_count": 33
 			},
 			{
 				"cell_type": "code",
