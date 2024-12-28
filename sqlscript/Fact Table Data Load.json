@@ -2,13 +2,13 @@
 	"name": "Fact Table Data Load",
 	"properties": {
 		"content": {
-			"query": "--create rides fact table\nIF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'FactRides')\nDROP TABLE FactRides\n\nCREATE TABLE dbo.FactRides (\n    RideDate DATE NULL,\n    StationComplex NVARCHAR(50) NULL,\n    TransitMode NVARCHAR(50) NULL,\n    PaymentMethod NVARCHAR(50) NULL\n--    FareClassCategory NVARCHAR(50) NULL\n--    Transfers FLOAT(4) NULL\n)\nWITH\n(\n    DISTRIBUTION = HASH(StationComplex),\n    CLUSTERED COLUMNSTORE INDEX\n)\n\n--create rides staging table\n\nIF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'StageRides')\nDROP TABLE StageRides\n\nCREATE TABLE dbo.StageRides (\n    RideDate DATE NULL,\n    StationComplex NVARCHAR(100) NULL,\n    TransitMode NVARCHAR(100) NULL,\n    PaymentMethod NVARCHAR(100) NULL,\n    FareClassCategory NVARCHAR(100) NULL,\n    Transfers INT NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    CLUSTERED COLUMNSTORE INDEX\n);\n\n\n\n----load data\n--load data\n\nCOPY INTO dbo.StageRides\n(RideDate, StationComplex, TransitMode, PaymentMethod, FareClassCategory, Transfers)\nFROM 'https://mtapipelinestorage.dfs.core.windows.net/files/updated_data/rider_data/*parquet'\nWITH\n(\n    FILE_TYPE = 'PARQUET',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF'\n);\n\n",
+			"query": "--USE mtasqlpool\n\n--create rides fact table\nIF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'FactRides')\nDROP TABLE FactRides\n\nCREATE TABLE dbo.FactRides (\n    RideDate DATE NOT NULL,\n    StationComplex NVARCHAR(100) NULL,\n    TransitMode NVARCHAR(100) NULL,\n    PaymentMethod NVARCHAR(100) NULL,\n    FareClassCategory NVARCHAR(100) NULL,\n    Transfers INT NULL\n)\nWITH\n(\n    DISTRIBUTION = HASH(StationComplex),\n    CLUSTERED COLUMNSTORE INDEX\n)\n\n--create rides staging table\n\nIF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'StageRides')\nDROP TABLE StageRides\n\nCREATE TABLE dbo.StageRides (\n    RideDate DATE NOT NULL,\n    StationComplex NVARCHAR(100) NULL,\n    TransitMode NVARCHAR(100) NULL,\n    PaymentMethod NVARCHAR(100) NULL,\n    FareClassCategory NVARCHAR(100) NULL,\n    Transfers INT NULL\n)\nWITH\n(\n    DISTRIBUTION = ROUND_ROBIN,\n    CLUSTERED COLUMNSTORE INDEX\n)\n\n\n\n--load data into staging table\n\nCOPY INTO dbo.StageRides\n(RideDate, StationComplex, TransitMode, PaymentMethod, FareClassCategory, Transfers)\nFROM 'https://mtapipelinestorage.dfs.core.windows.net/files/updated_data/rider_data/*parquet'\nWITH\n(\n    FILE_TYPE = 'PARQUET',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF'\n)\n\nSELECT TOP 100 * FROM dbo.StageRides\n--load data into Fact table\n\n\n",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "master",
-				"poolName": "Built-in"
+				"databaseName": "mtasqlpool",
+				"poolName": "mtasqlpool"
 			},
 			"resultLimit": 5000
 		},
