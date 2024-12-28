@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d6c86742-8d39-405f-812b-f2f235abc228"
+				"spark.autotune.trackingId": "9a24b64f-0328-45c6-b783-945f26935e0c"
 			}
 		},
 		"metadata": {
@@ -80,10 +80,10 @@
 					"station_df.createOrReplaceTempView(\"station_data\")\n",
 					"#display(station_df.limit(5))\n",
 					"\n",
-					"display(station_df.schema.fields)\n",
+					"#display(station_df.schema.fields)\n",
 					"station_df.write.mode(\"overwrite\").parquet(\"/updated_data/station_data\")"
 				],
-				"execution_count": 20
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
@@ -102,16 +102,14 @@
 				"source": [
 					"#load rider data\n",
 					"\n",
-					"from pyspark.sql.types import FloatType\n",
+					"from pyspark.sql.types import FloatType, IntegerType\n",
 					"\n",
 					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
 					"\n",
-					"response_df = response_df.withColumn(\"transfers\",response_df.transfers.cast(FloatType()))\n",
+					"response_df = response_df.withColumn(\"transfers\",response_df.transfers.cast(IntegerType()))\n",
 					"\n",
 					"response_df.createOrReplaceTempView(\"rider_data\")\n",
 					"\n",
-					"#CAST(transit_timestamp AS DATE) AS RideDate,\n",
-					"# transfers AS Transfers\n",
 					"rider_df = spark.sql(\"SELECT CAST(transit_timestamp AS DATE) AS RideDate, station_complex AS StationComplex,\\\n",
 					" transit_mode AS TransitMode, payment_method AS PaymentMethod, fare_class_category AS FareClassCategory,\\\n",
 					" transfers AS Transfers\\\n",
@@ -119,12 +117,13 @@
 					"\n",
 					"display(rider_df.limit(5))\n",
 					"\n",
-					"display(rider_df.schema.fields)\n",
+					"#display(rider_df.schema.fields)\n",
 					"rider_df.write.mode(\"overwrite\").parquet(\"/updated_data/rider_data\")\n",
+					"\n",
 					"\n",
 					""
 				],
-				"execution_count": 33
+				"execution_count": 43
 			},
 			{
 				"cell_type": "code",
@@ -147,7 +146,7 @@
 					"# joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data WHERE YEAR(date) = 2024\")\n",
 					"# display(joint_df.limit(5))"
 				],
-				"execution_count": 15
+				"execution_count": 44
 			},
 			{
 				"cell_type": "code",
@@ -166,7 +165,7 @@
 					"#write modified data to parquet\n",
 					"# joint_df.write.partitionBy(\"Month\").mode(\"overwrite\").parquet(\"/updated_data\")"
 				],
-				"execution_count": 16
+				"execution_count": 45
 			},
 			{
 				"cell_type": "code",
