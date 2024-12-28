@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "49684d38-1799-4850-8426-59d492b2f828"
+				"spark.autotune.trackingId": "c0fdb448-0376-4ba3-9e4c-8f3c0578725b"
 			}
 		},
 		"metadata": {
@@ -105,19 +105,21 @@
 					"response_df = spark.read.csv('abfss://files@mtapipelinestorage.dfs.core.windows.net/rider_data/Rider_data.csv', header=True, inferSchema=True)\n",
 					"response_df.createOrReplaceTempView(\"rider_data\")\n",
 					"\n",
-					"rider_df = spark.sql(\"SELECT CAST(transit_timestamp AS DATE) AS RideDate, MONTH(CAST(transit_timestamp AS DATE)) AS month, station_complex AS StationComplex,\\\n",
+					"rider_df = spark.sql(\"SELECT CAST(transit_timestamp AS DATE) AS RideDate, station_complex AS StationComplex,\\\n",
 					" transit_mode AS TransitMode, payment_method AS PaymentMethod, fare_class_category AS FareClassCategory,\\\n",
 					" transfers AS Transfers \\\n",
 					" FROM rider_data\")\n",
 					"\n",
 					"#display(response_df.schema.fields)\n",
 					"#response_df.createOrReplaceTempView(\"rider_data\") \n",
+					"#MONTH(CAST(transit_timestamp AS DATE)) AS month\n",
+					"\n",
 					"display(rider_df.limit(5))\n",
 					"\n",
-					"rider_df.write.partitionBy(\"Month\").mode(\"overwrite\").parquet(\"/updated_data/rider_data\")\n",
+					"rider_df.write.mode(\"overwrite\").parquet(\"/updated_data/rider_data\")\n",
 					""
 				],
-				"execution_count": 15
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",

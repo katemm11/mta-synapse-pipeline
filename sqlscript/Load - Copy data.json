@@ -2,7 +2,7 @@
 	"name": "Load - Copy data",
 	"properties": {
 		"content": {
-			"query": "COPY INTO dbo.StageStation (\n    StationName,\n    StationComplex,\n    Borough,\n    IsHistorical,\n    ServiceAvailable,\n    WifiAvailable\n)\nFROM 'https://mtapipelinestorage.dfs.core.windows.net/files/updated_data/Month=2/'\nWITH\n(\n    FILE_TYPE = 'PARQUET',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF'\n);\n",
+			"query": "COPY INTO dbo.StageStation \n(StationName,StationComplex,Borough,IsHistorical,ServiceAvailable,WifiAvailable)\nFROM 'https://mtapipelinestorage.dfs.core.windows.net/files/updated_data/station_data/*parquet'\nWITH\n(\n    FILE_TYPE = 'PARQUET',\n    MAXERRORS = 0,\n    IDENTITY_INSERT = 'OFF'\n);\n",
 			"metadata": {
 				"language": "sql"
 			},
