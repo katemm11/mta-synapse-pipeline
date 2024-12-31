@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9a24b64f-0328-45c6-b783-945f26935e0c"
+				"spark.autotune.trackingId": "af39c3af-6a05-42fb-ab67-b2c5b5262662"
 			}
 		},
 		"metadata": {
@@ -76,14 +76,15 @@
 					"station_df = spark.sql(\"SELECT STATION AS StationName, STATION_COMPLEX AS StationComplex, BOROUGH AS Borough, is_historical AS IsHistorical,wifi_available as WifiAvailable, CASE WHEN att = True \\\n",
 					"  OR sprint = True \\\n",
 					"  OR tmobile = True THEN True ELSE False END AS ServiceAvailable\\\n",
-					"    FROM wifi_stations\")\n",
+					"    FROM wifi_stations \\\n",
+					"    WHERE STATION IS NOT NULL\")\n",
 					"station_df.createOrReplaceTempView(\"station_data\")\n",
 					"#display(station_df.limit(5))\n",
 					"\n",
 					"#display(station_df.schema.fields)\n",
 					"station_df.write.mode(\"overwrite\").parquet(\"/updated_data/station_data\")"
 				],
-				"execution_count": 42
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -123,7 +124,7 @@
 					"\n",
 					""
 				],
-				"execution_count": 43
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -146,7 +147,7 @@
 					"# joint_df = spark.sql (\"SELECT YEAR(date) AS year, MONTH(date) AS month, DAY(date) AS day, date, station_complex, is_historical, wifi_available, service_available FROM joint_data WHERE YEAR(date) = 2024\")\n",
 					"# display(joint_df.limit(5))"
 				],
-				"execution_count": 44
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -165,7 +166,7 @@
 					"#write modified data to parquet\n",
 					"# joint_df.write.partitionBy(\"Month\").mode(\"overwrite\").parquet(\"/updated_data\")"
 				],
-				"execution_count": 45
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
