@@ -92,7 +92,7 @@
 				}
 			},
 			{
-				"name": "SQL pool stored procedure1",
+				"name": "Run Stored Procedure",
 				"type": "SqlPoolStoredProcedure",
 				"dependsOn": [],
 				"policy": {
@@ -102,7 +102,14 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "mtasqlpool",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[load_data_warehouse]"
+				}
 			}
 		],
 		"annotations": []
