@@ -73,7 +73,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"notebook": {
-						"referenceName": "MTA Data Manipulation Workbook",
+						"referenceName": "Spark Transform Notebook",
 						"type": "NotebookReference"
 					},
 					"snapshot": true,

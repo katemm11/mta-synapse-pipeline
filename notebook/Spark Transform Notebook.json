@@ -1,5 +1,5 @@
 {
-	"name": "MTA Data Manipulation Workbook",
+	"name": "Spark Transform Notebook",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9354a51c-c34c-41d1-ae3b-6a48200ebde3"
+				"spark.autotune.trackingId": "865d4a6d-7454-4eb9-8656-3a2e42d3ed66"
 			}
 		},
 		"metadata": {
