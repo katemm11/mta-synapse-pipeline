@@ -90,6 +90,19 @@
 					"driverSize": "Small",
 					"numExecutors": 3
 				}
+			},
+			{
+				"name": "SQL pool stored procedure1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"annotations": []
