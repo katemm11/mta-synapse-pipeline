@@ -2,13 +2,13 @@
 	"name": "SQL script 2",
 	"properties": {
 		"content": {
-			"query": "CREATE PROCEDURE load_data_warehouse @name\nAS BEGIN\n\nEND\nGO",
+			"query": "SELECT TOP 10 * FROM DimStation;\n\nSELECT TOP 10 * FROM FactRides;",
 			"metadata": {
 				"language": "sql"
 			},
 			"currentConnection": {
-				"databaseName": "master",
-				"poolName": "Built-in"
+				"databaseName": "mtasqlpool",
+				"poolName": "mtasqlpool"
 			},
 			"resultLimit": 5000
 		},
