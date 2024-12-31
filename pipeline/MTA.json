@@ -53,7 +53,34 @@
 				]
 			},
 			{
-				"name": "Run MTA Notebook",
+				"name": "Run Stored Procedure",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Spark Transform Notebook",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "mtasqlpool",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[load_data_warehouse]"
+				}
+			},
+			{
+				"name": "Spark Transform Notebook",
 				"type": "SynapseNotebook",
 				"dependsOn": [
 					{
@@ -83,39 +110,12 @@
 					},
 					"executorSize": "Small",
 					"conf": {
-						"spark.dynamicAllocation.enabled": true,
-						"spark.dynamicAllocation.minExecutors": 3,
-						"spark.dynamicAllocation.maxExecutors": 10
+						"spark.dynamicAllocation.enabled": false,
+						"spark.dynamicAllocation.minExecutors": 1,
+						"spark.dynamicAllocation.maxExecutors": 1
 					},
 					"driverSize": "Small",
-					"numExecutors": 3
-				}
-			},
-			{
-				"name": "Run Stored Procedure",
-				"type": "SqlPoolStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "Run MTA Notebook",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"sqlPool": {
-					"referenceName": "mtasqlpool",
-					"type": "SqlPoolReference"
-				},
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[load_data_warehouse]"
+					"numExecutors": 1
 				}
 			}
 		],

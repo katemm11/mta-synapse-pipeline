@@ -1,5 +1,5 @@
 {
-	"name": "SQL script 2",
+	"name": "Check Load Script",
 	"properties": {
 		"content": {
 			"query": "SELECT TOP 10 * FROM DimStation;\n\nSELECT TOP 10 * FROM FactRides;",
