@@ -2,7 +2,7 @@
 	"name": "Check Load Script",
 	"properties": {
 		"content": {
-			"query": "SELECT TOP 10 * FROM DimStation;\n\nSELECT TOP 10 * FROM FactRides;",
+			"query": "--check station data load and that station ID incremented correctly\nSELECT TOP 100 * FROM DimStation ORDER BY StationId;\n\n--check ride data load\nSELECT TOP 100 * FROM FactRides;\n\n--Check number of stations\nSELECT COUNT(*) FROM DimStation;\n\n--Check most recent ride date loaded\nSELECT MAX(RideDate) FROM FactRides;\n\n--Check earliest ride date loaded\nSELECT MIN(RideDate) FROM FactRides;\n\n--Check number of rides at each station\nSELECT s.StationName, COUNT(r.RideDate) NumRides FROM FactRides r\nJOIN DimStation s ON r.StationID = s.StationID\nGROUP BY s.StationName\nORDER BY NumRides DESC;\n\n--Rank fare class category used at each station\nSELECT r.StationID, s.StationName, r.FareClassCategory, COUNT(r.FareClassCategory) AS NumFareClass,\nRANK() OVER (PARTITION BY r.StationID ORDER BY COUNT(r.FareClassCategory) DESC) AS Rank\nFROM FactRides r\nJOIN DimStation s ON r.StationID = s.StationId\nGROUP BY r.StationID, s.StationName, r.FareClassCategory\nORDER BY r.StationID;\n",
 			"metadata": {
 				"language": "sql"
 			},
