@@ -53,7 +53,7 @@
 				]
 			},
 			{
-				"name": "Run Stored Procedure",
+				"name": "Run Data Load Stored Procedure",
 				"type": "SqlPoolStoredProcedure",
 				"dependsOn": [
 					{
